@@ -3,40 +3,41 @@ name: Publish to npm
 on:
   push:
     branches:
-      - main # Trigger only on push to the main branch (you can change this to another branch if needed)
+      - main  # Trigger when changes are pushed to the 'main' branch
     tags:
-      - 'v*' # Triggers when you push tags that start with "v" (e.g., v1.0.0)
+      - 'v*'  # Trigger when a new version tag is pushed (e.g., v1.0.0)
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+
     steps:
-      # Checkout the code from GitHub
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Checkout the repository code
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # Set up Node.js (use your desired version)
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14' # You can change this to a version you are using
+    # Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Use the appropriate version of Node.js
+        registry-url: 'https://registry.npmjs.org/'
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
+    # Install dependencies
+    - name: Install dependencies
+      run: npm install
 
-      # Login to npm
-      - name: Login to npm
-        uses: actions/setup-node@v2
-        with:
-          registry-url: 'https://registry.npmjs.org/'
-          node-version: '14'
-          scope: '@your-npm-username' # Use your npm username scope (optional)
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}} # Make sure you store your npm token in GitHub secrets
+    # Log in to npm
+    - name: Authenticate to npm
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        registry-url: 'https://registry.npmjs.org/'
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # Use the npm token stored in GitHub Secrets
 
-      # Publish the package to npm
-      - name: Publish package to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}} # Make sure your npm token is set in the secrets
+    # Publish to npm
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # Ensure authentication for publishing
