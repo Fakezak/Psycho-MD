@@ -1,14 +1,14 @@
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const fs = require('fs-extra');
-const readline = require('readline-sync');
 const chalk = require('chalk');
 const config = require("./config");
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./auth_info');
+
     const sock = makeWASocket({
         auth: state,
-        printQRInTerminal: true
+        printQRInTerminal: false
     });
 
     sock.ev.on('connection.update', async (update) => {
@@ -32,7 +32,7 @@ async function startBot() {
             if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
                 startBot();
             } else {
-                console.log(chalk.redBright('Login expired. Restart and scan QR code.'));
+                console.log(chalk.redBright('Login expired. Restart and re-authenticate.'));
             }
         }
     });
@@ -56,31 +56,49 @@ async function startBot() {
             let menuText = `*📜 ${config.botName} Commands 📜*\n\n
                 *${config.prefix}ping* - Check bot response\n
                 *${config.prefix}info* - Bot details\n
-                *${config.prefix}rank* - View your rank\n
-                *${config.prefix}afk [reason]* - Set AFK mode\n
-                *${config.prefix}kick @user* - Remove a user\n
-                *${config.prefix}promote @user* - Make admin\n
-                *${config.prefix}mute @user* - Mute a user\n
                 *${config.prefix}sticker* - Convert image to sticker\n
                 *${config.prefix}ytmp3 [link]* - Download YouTube audio\n
                 *${config.prefix}weather [city]* - Get weather info\n
-                *${config.prefix}news* - Latest news\n\n
+                *${config.prefix}news* - Latest news\n
+                *${config.prefix}joke* - Get a random joke\n
+                *${config.prefix}quote* - Get an inspirational quote\n
+                *${config.prefix}define [word]* - Get word definition\n\n
                 More commands coming soon! 🚀`;
             
             await sock.sendMessage(sender, { text: menuText });
         }
+
+        if (messageText.startsWith(config.prefix + "ping")) {
+            await sock.sendMessage(sender, { text: "Pong! 🏓" });
+        }
+
+        if (messageText.startsWith(config.prefix + "info")) {
+            await sock.sendMessage(sender, { text: `🤖 Bot Name: ${config.botName}\n👤 Owner: ${config.ownerNumber}` });
+        }
+
+        if (messageText.startsWith(config.prefix + "joke")) {
+            let jokes = ["Why don't scientists trust atoms? Because they make up everything!", 
+                         "I'm reading a book on anti-gravity. It's impossible to put down!"];
+            let randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+            await sock.sendMessage(sender, { text: randomJoke });
+        }
+
+        if (messageText.startsWith(config.prefix + "quote")) {
+            let quotes = ["The only way to do great work is to love what you do. - Steve Jobs", 
+                          "Believe you can and you're halfway there. - Theodore Roosevelt"];
+            let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            await sock.sendMessage(sender, { text: randomQuote });
+        }
+
+        if (messageText.startsWith(config.prefix + "define ")) {
+            let word = messageText.replace(config.prefix + "define ", "").trim();
+            if (word) {
+                await sock.sendMessage(sender, { text: `🔍 Definition of ${word}: (Placeholder definition)` });
+            } else {
+                await sock.sendMessage(sender, { text: "Please provide a word to define." });
+            }
+        }
     });
 }
 
-async function handleUserInput() {
-    const startCommand = readline.question(chalk.cyan('\nEnter "startbot" to start the bot: '));
-
-    if (startCommand.toLowerCase() === 'startbot') {
-        console.log(chalk.green('\nStarting the bot...'));
-        await startBot();
-    } else {
-        console.log(chalk.red('\nInvalid command! Please enter "startbot" to start the bot.'));
-    }
-}
-
-handleUserInput();
+startBot();
