@@ -1,7 +1,7 @@
 module.exports = {
     botName: "Xeaon Zak MD Bot",
-    ownerNumber: "+1234567890", // Change this to your number
+    ownerNumber: "18768375254", // Change this to your number
     prefix: ".", // Command prefix
-    status: true, // Show bot online status (true/false)
-    autoRead: true // Auto-read messages (true/false)
+    status: false, // Show bot online status (true/false)
+    autoRead: false // Auto-read messages (true/false)
 };
