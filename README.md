@@ -32,9 +32,9 @@ A powerful WhatsApp bot using Baileys.
 
 ## Deployment
 
-- **Railway**: Connect this repo and deploy.
-- **Heroku**: Use the `Procfile` to deploy.
-- **Termux**: Run `node index.js` in Termux.
+- **Railway**: [![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
+- **Heroku**: [![Heroku](https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white)](https://www.heroku.com/)
+- **Termux**: [![Termux](https://img.shields.io/badge/Termux-000000?style=for-the-badge&logo=termux&logoColor=white)](https://termux.com/)
 
 ## Commands
 
@@ -47,3 +47,5 @@ A powerful WhatsApp bot using Baileys.
 - `.news` - Latest news
 
 More features coming soon! 🚀
+
+**Bot Name:** Xeaon Psycho Zak MD
